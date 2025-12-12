@@ -103,6 +103,52 @@ const Index = () => {
     }
   };
 
+  const exportToCSV = (data: any[], filename: string) => {
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data.map(row => Object.values(row).join(','));
+    const csv = [headers, ...rows].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportChartData = (chartType: string) => {
+    let data: any[] = [];
+    let filename = '';
+
+    switch (chartType) {
+      case 'engagement':
+        data = getEngagementData();
+        filename = `engagement_${timePeriod}`;
+        break;
+      case 'performance':
+        data = performanceData;
+        filename = 'performance';
+        break;
+      case 'competitors':
+        data = competitorComparisonData;
+        filename = 'competitor_comparison';
+        break;
+      case 'content-type':
+        data = contentTypeData;
+        filename = 'content_types';
+        break;
+      default:
+        return;
+    }
+
+    exportToCSV(data, filename);
+  };
+
   const contentTypeData = [
     { name: 'Статьи', value: 342, color: '#8B5CF6' },
     { name: 'Видео', value: 289, color: '#0EA5E9' },
@@ -391,6 +437,15 @@ const Index = () => {
                     <h3 className="text-lg font-semibold text-foreground">Вовлеченность</h3>
                     <div className="flex gap-2">
                       <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => exportChartData('engagement')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        <Icon name="Download" size={14} className="mr-1" />
+                        CSV
+                      </Button>
+                      <Button
                         variant={timePeriod === 'day' ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setTimePeriod('day')}
@@ -463,7 +518,18 @@ const Index = () => {
                 </Card>
 
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Активность по часам</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">Активность по часам</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportChartData('performance')}
+                      className="h-8 px-3 text-xs"
+                    >
+                      <Icon name="Download" size={14} className="mr-1" />
+                      CSV
+                    </Button>
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={performanceData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
@@ -493,7 +559,18 @@ const Index = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Сравнение с конкурентами</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">Сравнение с конкурентами</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportChartData('competitors')}
+                      className="h-8 px-3 text-xs"
+                    >
+                      <Icon name="Download" size={14} className="mr-1" />
+                      CSV
+                    </Button>
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={competitorComparisonData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
@@ -516,7 +593,18 @@ const Index = () => {
                 </Card>
 
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Типы контента</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">Типы контента</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportChartData('content-type')}
+                      className="h-8 px-3 text-xs"
+                    >
+                      <Icon name="Download" size={14} className="mr-1" />
+                      CSV
+                    </Button>
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
