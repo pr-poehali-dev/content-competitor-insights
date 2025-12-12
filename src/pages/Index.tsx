@@ -6,6 +6,23 @@ import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -43,6 +60,42 @@ const Index = () => {
     { name: 'Недельный отчет', date: '10 дек 2024', type: 'weekly', status: 'ready' },
     { name: 'Анализ конкурентов', date: '08 дек 2024', type: 'competitors', status: 'ready' },
     { name: 'Тренды месяца', date: '01 дек 2024', type: 'trends', status: 'ready' },
+  ];
+
+  const engagementData = [
+    { date: 'Пн', views: 2400, engagement: 1398, shares: 800 },
+    { date: 'Вт', views: 1398, engagement: 2210, shares: 967 },
+    { date: 'Ср', views: 9800, engagement: 2290, shares: 1400 },
+    { date: 'Чт', views: 3908, engagement: 2000, shares: 1200 },
+    { date: 'Пт', views: 4800, engagement: 2181, shares: 1500 },
+    { date: 'Сб', views: 3800, engagement: 2500, shares: 1100 },
+    { date: 'Вс', views: 4300, engagement: 2100, shares: 1300 },
+  ];
+
+  const contentTypeData = [
+    { name: 'Статьи', value: 342, color: '#8B5CF6' },
+    { name: 'Видео', value: 289, color: '#0EA5E9' },
+    { name: 'Инфографика', value: 198, color: '#F97316' },
+    { name: 'Подкасты', value: 118, color: '#D946EF' },
+  ];
+
+  const competitorComparisonData = [
+    { month: 'Янв', you: 4000, compA: 2400, compB: 3200 },
+    { month: 'Фев', you: 3000, compA: 1398, compB: 2800 },
+    { month: 'Мар', you: 5000, compA: 9800, compB: 3900 },
+    { month: 'Апр', you: 4780, compA: 3908, compB: 4200 },
+    { month: 'Май', you: 5890, compA: 4800, compB: 4700 },
+    { month: 'Июн', you: 6390, compA: 3800, compB: 5100 },
+  ];
+
+  const performanceData = [
+    { time: '00:00', value: 120 },
+    { time: '04:00', value: 80 },
+    { time: '08:00', value: 340 },
+    { time: '12:00', value: 520 },
+    { time: '16:00', value: 680 },
+    { time: '20:00', value: 450 },
+    { time: '23:59', value: 290 },
   ];
 
   return (
@@ -272,16 +325,6 @@ const Index = () => {
 
           {activeTab === 'analysis' && (
             <div className="space-y-6 animate-fade-in">
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Анализ производительности</h3>
-                <div className="h-64 flex items-center justify-center bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl">
-                  <div className="text-center">
-                    <Icon name="BarChart3" size={48} className="text-primary mx-auto mb-4" />
-                    <p className="text-muted-foreground">Интерактивные графики аналитики</p>
-                  </div>
-                </div>
-              </Card>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="p-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -308,6 +351,139 @@ const Index = () => {
                   </div>
                   <p className="text-3xl font-bold text-foreground mb-2">14.5K</p>
                   <p className="text-sm text-green-600">+12% за неделю</p>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Вовлеченность за неделю</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={engagementData}>
+                      <defs>
+                        <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorEngagement" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
+                      <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '12px' }} />
+                      <Area
+                        type="monotone"
+                        dataKey="views"
+                        stroke="#8B5CF6"
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#colorViews)"
+                        name="Просмотры"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="engagement"
+                        stroke="#0EA5E9"
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#colorEngagement)"
+                        name="Вовлечённость"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </Card>
+
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Активность по часам</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={performanceData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
+                      <XAxis dataKey="time" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke="#F97316"
+                        strokeWidth={3}
+                        dot={{ fill: '#F97316', strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6 }}
+                        name="Активность"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Сравнение с конкурентами</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={competitorComparisonData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.3} />
+                      <XAxis dataKey="month" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '12px' }} />
+                      <Bar dataKey="you" fill="#8B5CF6" radius={[8, 8, 0, 0]} name="Вы" />
+                      <Bar dataKey="compA" fill="#0EA5E9" radius={[8, 8, 0, 0]} name="Competitor A" />
+                      <Bar dataKey="compB" fill="#D946EF" radius={[8, 8, 0, 0]} name="Competitor B" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Card>
+
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Типы контента</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={contentTypeData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {contentTypeData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </Card>
               </div>
             </div>
