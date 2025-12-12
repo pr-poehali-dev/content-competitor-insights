@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTheme } from 'next-themes';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -27,6 +28,7 @@ import {
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [timePeriod, setTimePeriod] = useState<'day' | 'week' | 'month'>('week');
+  const { theme, setTheme } = useTheme();
 
   const stats = [
     { label: 'Всего публикаций', value: '12,847', change: '+12.5%', icon: 'FileText', color: 'text-primary' },
@@ -176,15 +178,29 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30 dark:via-purple-950/20 dark:to-blue-950/20">
       <div className="flex">
         <aside className="w-64 min-h-screen bg-sidebar border-r border-sidebar-border">
           <div className="p-6">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <Icon name="TrendingUp" className="text-white" size={24} />
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                  <Icon name="TrendingUp" className="text-white" size={24} />
+                </div>
+                <h1 className="text-xl font-bold text-sidebar-foreground">TrendScope</h1>
               </div>
-              <h1 className="text-xl font-bold text-sidebar-foreground">TrendScope</h1>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="h-9 w-9"
+              >
+                {theme === 'dark' ? (
+                  <Icon name="Sun" size={18} className="text-sidebar-foreground" />
+                ) : (
+                  <Icon name="Moon" size={18} className="text-sidebar-foreground" />
+                )}
+              </Button>
             </div>
 
             <nav className="space-y-2">
