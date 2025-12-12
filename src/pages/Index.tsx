@@ -26,6 +26,7 @@ import {
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [timePeriod, setTimePeriod] = useState<'day' | 'week' | 'month'>('week');
 
   const stats = [
     { label: 'Всего публикаций', value: '12,847', change: '+12.5%', icon: 'FileText', color: 'text-primary' },
@@ -62,7 +63,17 @@ const Index = () => {
     { name: 'Тренды месяца', date: '01 дек 2024', type: 'trends', status: 'ready' },
   ];
 
-  const engagementData = [
+  const engagementDataDay = [
+    { date: '00:00', views: 120, engagement: 98, shares: 45 },
+    { date: '04:00', views: 80, engagement: 67, shares: 23 },
+    { date: '08:00', views: 340, engagement: 289, shares: 120 },
+    { date: '12:00', views: 520, engagement: 456, shares: 198 },
+    { date: '16:00', views: 680, engagement: 590, shares: 267 },
+    { date: '20:00', views: 450, engagement: 398, shares: 178 },
+    { date: '23:59', views: 290, engagement: 245, shares: 89 },
+  ];
+
+  const engagementDataWeek = [
     { date: 'Пн', views: 2400, engagement: 1398, shares: 800 },
     { date: 'Вт', views: 1398, engagement: 2210, shares: 967 },
     { date: 'Ср', views: 9800, engagement: 2290, shares: 1400 },
@@ -71,6 +82,26 @@ const Index = () => {
     { date: 'Сб', views: 3800, engagement: 2500, shares: 1100 },
     { date: 'Вс', views: 4300, engagement: 2100, shares: 1300 },
   ];
+
+  const engagementDataMonth = [
+    { date: 'Нед 1', views: 18400, engagement: 12398, shares: 5800 },
+    { date: 'Нед 2', views: 21398, engagement: 15210, shares: 6967 },
+    { date: 'Нед 3', views: 29800, engagement: 19290, shares: 8400 },
+    { date: 'Нед 4', views: 33908, engagement: 22000, shares: 9200 },
+  ];
+
+  const getEngagementData = () => {
+    switch (timePeriod) {
+      case 'day':
+        return engagementDataDay;
+      case 'week':
+        return engagementDataWeek;
+      case 'month':
+        return engagementDataMonth;
+      default:
+        return engagementDataWeek;
+    }
+  };
 
   const contentTypeData = [
     { name: 'Статьи', value: 342, color: '#8B5CF6' },
@@ -356,9 +387,37 @@ const Index = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Вовлеченность за неделю</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground">Вовлеченность</h3>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={timePeriod === 'day' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimePeriod('day')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        День
+                      </Button>
+                      <Button
+                        variant={timePeriod === 'week' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimePeriod('week')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        Неделя
+                      </Button>
+                      <Button
+                        variant={timePeriod === 'month' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimePeriod('month')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        Месяц
+                      </Button>
+                    </div>
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={engagementData}>
+                    <AreaChart data={getEngagementData()}>
                       <defs>
                         <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
